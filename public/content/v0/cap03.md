@@ -1,0 +1,7 @@
+Tomado de: (The "I AM" Discourses vol. 8 page 166 by the Great Divine Director)
+
+"Dear Ones, please use the Terminology which We have given you. The Words, 'I AM,' as written in English today, have come down from the Beginning of mankind's appearance upon the Earth. In the Royal Teton, on your map, known as the Grand Teton, there are the Records of these civilizations- every one which has ever been on Earth. In every language which was used during those many civilizations the Words, 'I AM' as written in English today are there; showing Those Two Words are the Power of God. Mankind needs to learn to use Those Words, as We do."
+
+Amados Míos, por favor usen la terminología que les hemos dado. Las palabras "I AM" tal como están escritas en inglés actualmente, han venido desde el principio de la aparición de la humanidad sobre la Tierra. En el Royal Teton - conocido en sus mapas como el "Grand Teton"- hay archivos de esas civilizaciones, todas las cuales se han dado aquí en la Tierra. En cada idioma que se utilizó durante esas múltiples civilizaciones, las palabras "I AM" como se escriben en inglés hoy en día, están presentes, mostrando que esas dos palabras constituyen el Poder de Dios. La humanidad necesita aprender a utilizar esas Palabras como las utilizamos Nosotros.
+
+

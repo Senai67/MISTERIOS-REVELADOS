@@ -1,0 +1,25 @@
+{
+  "name": "misterios-revelados-app",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "flexsearch": "^0.7.31",
+    "jspdf": "^3.0.1",
+    "lucide-react": "^0.511.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.7",
+    "@vitejs/plugin-react": "^4.3.0",
+    "tailwindcss": "^4.1.7",
+    "vite": "^5.2.0"
+  }
+}

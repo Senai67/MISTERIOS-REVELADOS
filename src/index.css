@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* Sistema de Diseño - Misterios Revelados */
+
+/* Variables CSS - Paleta de Colores */
+@theme {
+  --color-parchment: #FDF6E3;
+  --color-parchment-dark: #F5EDD9;
+  --color-gold-primary: #D4AF37;
+  --color-gold-hover: #C5A028;
+  --color-gold-light: #E8C850;
+  --color-ink: #2C2C2C;
+  --color-ink-light: #4A4A4A;
+  
+  --font-sans: 'Lora', serif;
+  --font-serif: 'Cinzel', serif;
+}
+
+/* Variables CSS para uso custom */
+:root {
+  --parchment: #FDF6E3;
+  --parchment-dark: #F5EDD9;
+  --gold-primary: #D4AF37;
+  --gold-hover: #C5A028;
+  --gold-light: #E8C850;
+  --ink: #2C2C2C;
+  --ink-light: #4A4A4A;
+  --white: #FFFFFF;
+  --black-overlay: rgba(0, 0, 0, 0.6);
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Configuración de fuentes */
+html {
+  font-family: 'Lora', serif;
+  color: var(--ink);
+  background-color: var(--parchment);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+/* Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animaciones Keyframe */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Clases de animación */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Focus states accesibles */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 2px;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Grid system - fallback para Tailwind */
+.book-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  justify-content: center;
+  place-items: center;
+}
+
+@media (min-width: 640px) {
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .book-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

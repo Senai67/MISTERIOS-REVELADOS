@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8C850;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Círculo exterior -->
+  <circle cx="50" cy="50" r="48" fill="none" stroke="url(#goldGradient)" stroke-width="3"/>
+  
+  <!-- Círculo interior -->
+  <circle cx="50" cy="50" r="40" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
+  
+  <!-- Estrella de 8 puntas (símbolo espiritual) -->
+  <g fill="url(#goldGradient)">
+    <polygon points="50,15 55,40 80,50 55,60 50,85 45,60 20,50 45,40"/>
+  </g>
+  
+  <!-- Letra "I AM" estilizada -->
+  <text x="50" y="95" font-family="Cinzel, serif" font-size="10" fill="#D4AF37" text-anchor="middle" font-weight="bold">
+    I AM
+  </text>
+</svg>
