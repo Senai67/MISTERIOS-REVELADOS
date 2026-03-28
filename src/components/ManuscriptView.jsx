@@ -2,12 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 
 /**
  * ManuscriptView - Vista de lectura de manuscrito
- * 
+ *
  * Muestra el contenido completo del libro con:
  * - Navegación por capítulos (Dropdown y botones)
  * - TTS (Text-to-Speech) con control de audio
  * - Progreso de lectura
- * - Exportación PDF del capítulo
  */
 
 // Iconos
@@ -267,23 +266,6 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     }
   }
 
-  const handleExportPDF = () => {
-    const { jsPDF } = window.jspdf
-    const doc = new jsPDF()
-    const margin = 20
-    const pageWidth = doc.internal.pageSize.getWidth()
-    const maxWidth = pageWidth - (margin * 2)
-
-    doc.setFont('times', 'bold')
-    doc.text(book.titulo, pageWidth / 2, 20, { align: 'center' })
-    doc.text(currentChapter.titulo, margin, 35)
-
-    doc.setFont('times', 'normal')
-    const lines = doc.splitTextToSize(chapterContent, maxWidth)
-    doc.text(lines, margin, 45)
-    doc.save(`${book.titulo}_Cap_${currentChapterIndex + 1}.pdf`)
-  }
-
   const progress = allParagraphs.length > 0 ? (currentParagraph / (allParagraphs.length - 1)) * 100 : 0
 
   return (
@@ -329,10 +311,6 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
                 style={{ backgroundColor: book.id === 0 ? '#8B0000' : '#D4AF37' }}
               >
                 {isPlaying ? <IconPause /> : <IconPlay />} {isPlaying ? 'Pausar' : 'Escuchar'}
-              </button>
-
-              <button onClick={handleExportPDF} className="flex items-center gap-2 px-3 py-1 rounded text-sm border border-white text-white font-serif">
-                <IconDownload /> Exportar
               </button>
             </div>
           </div>

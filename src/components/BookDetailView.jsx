@@ -59,7 +59,7 @@ export default function BookDetailView({ book, onBack, onRead }) {
   const handleResetProgress = () => {
     if (showResetConfirm) {
       localStorage.setItem(`book_progress_${book.id}`, '0')
-      
+
       // Clear individual chapter progress
       book.capitulos.forEach((_, idx) => {
         localStorage.removeItem(`audio_progress_book_${book.id}_ch_${idx}`)
@@ -75,24 +75,9 @@ export default function BookDetailView({ book, onBack, onRead }) {
     }
   }
 
-  const handleDownload = () => {
-    // Generar contenido del manuscrito
-    let content = `${book.volumen}\n${book.titulo}\n\n`
-
-    book.capitulos.forEach((cap, idx) => {
-      content += `CAPÍTULO ${idx + 1}: ${cap.titulo}\n`
-      content += '-'.repeat(40) + '\n\n'
-      content += `[Contenido disponible en la versión digital o mediante descarga individual del capítulo]\n\n`
-    })
-
-    // Crear blob y descargar
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${book.titulo.replace(/[^a-z0-9]/gi, '_')}.txt`
-    link.click()
-    URL.revokeObjectURL(url)
+  const handleDownloadPDF = () => {
+    // Descargar el PDF completo de la Trilogía
+    window.open('/pdfs/Misterios_Revelados_Completo.pdf', '_blank');
   }
 
   return (
@@ -290,7 +275,7 @@ export default function BookDetailView({ book, onBack, onRead }) {
 
               {/* Botón Descargar Manuscrito */}
               <button
-                onClick={handleDownload}
+                onClick={handleDownloadPDF}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm uppercase tracking-wider font-semibold transition-all duration-200 border-2"
                 style={{
                   borderColor: '#D4AF37',
@@ -308,7 +293,7 @@ export default function BookDetailView({ book, onBack, onRead }) {
                 }}
               >
                 <IconDownload />
-                Descargar Manuscrito
+                Descargar PDF Completo
               </button>
             </div>
 
@@ -398,8 +383,8 @@ export default function BookDetailView({ book, onBack, onRead }) {
                           Haga clic para cargar y leer este capítulo...
                         </p>
                         {progress > 0 && (
-                          <p 
-                            className="mt-2 text-xs italic font-serif" 
+                          <p
+                            className="mt-2 text-xs italic font-serif"
                             style={{ color: '#8B691C' }}
                           >
                             Progreso de lectura: {progress}%

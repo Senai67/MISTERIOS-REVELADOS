@@ -11,7 +11,7 @@
   --color-gold-light: #E8C850;
   --color-ink: #2C2C2C;
   --color-ink-light: #4A4A4A;
-  
+
   --font-sans: 'Lora', serif;
   --font-serif: 'Cinzel', serif;
 }
@@ -37,7 +37,12 @@ html {
   background-color: var(--parchment);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Cinzel', serif;
   font-weight: 700;
 }
@@ -57,6 +62,7 @@ html {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -67,6 +73,7 @@ html {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -74,9 +81,12 @@ html {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -101,6 +111,31 @@ input:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--gold-primary);
   outline-offset: 2px;
+}
+
+/* Chatbot - Buscador */
+.shadow-mystic {
+  box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.4);
+}
+
+.paper-edge {
+  border-style: solid;
+  border-width: 1px;
+  border-image: linear-gradient(to right, transparent, var(--color-gold-primary), transparent) 1;
+}
+
+.master-response {
+  font-style: italic;
+  color: var(--color-gold-hover);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Line clamp utility */
