@@ -25,7 +25,8 @@ const libros = [
     titulo: "MISTERIOS REVELADOS",
     descripcion: "Encuentro místico en el Monte Shasta (1930)",
     sinopsis: "Narra el encuentro entre Godfré Ray King y Saint Germain, introduciendo la 'Poderosa Presencia I AM'.",
-    color: "#8B691C",
+    color: "#713a77",
+    colorInferior: "#532b57",
     imagen: "/images/Slide1b.png",
     capitulos: [
       { numero: 0, titulo: "Prefacio y Dedicatoria", path: "/content/v1/intro.md" },

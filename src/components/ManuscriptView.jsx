@@ -218,9 +218,21 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     utterance.rate = 1.0
     if (selectedVoice) utterance.voice = selectedVoice
 
-    utterance.onend = () => playNext(index + 1)
+    // Fallback timeout: si onend no se dispara en 15s, continuar al siguiente
+    let endTimeout = setTimeout(() => {
+      console.log('[TTS] Timeout fallback - paragraph', index)
+      if (isPlayingRef.current && index + 1 < paragraphs.length) {
+        playNext(index + 1)
+      }
+    }, 15000)
+
+    utterance.onend = () => {
+      clearTimeout(endTimeout)
+      playNext(index + 1)
+    }
     // On error: if 'interrupted' (user cancelled) → stop; otherwise skip to next paragraph
     utterance.onerror = (e) => {
+      clearTimeout(endTimeout)
       if (e.error === 'interrupted' || e.error === 'canceled') {
         isPlayingRef.current = false
         setIsPlaying(false)
