@@ -54,9 +54,49 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
   const [currentParagraph, setCurrentParagraph] = useState(0)
   const [chapterContent, setChapterContent] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [wakeLockSupported, setWakeLockSupported] = useState(true)
+  const [isMobileDevice, setIsMobileDevice] = useState(false)
   const contentRef = useRef(null)
   const isPlayingRef = useRef(false)
   const allParagraphsRef = useRef([])
+  const wakeLockRef = useRef(null)
+
+  useEffect(() => {
+    setIsMobileDevice(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+  }, [])
+
+  // Nivel PRO: Gestionar el bloqueo de pantalla (Wake Lock)
+  const requestWakeLock = async () => {
+    if ('wakeLock' in navigator) {
+      try {
+        wakeLockRef.current = await navigator.wakeLock.request('screen')
+        setWakeLockSupported(true)
+      } catch (err) {
+        console.warn(`[Wake Lock] Fallback UX activado: ${err.name}, ${err.message}`)
+        setWakeLockSupported(false) // Fallback si falla
+      }
+    } else {
+      setWakeLockSupported(false) // Fallback si no está soportado
+    }
+  }
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current !== null) {
+      await wakeLockRef.current.release()
+      wakeLockRef.current = null
+    }
+  }
+
+  // Si el usuario cambia de pestaña y vuelve, renegociar el wake lock
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (wakeLockRef.current !== null && document.visibilityState === 'visible' && isPlayingRef.current) {
+        await requestWakeLock()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [])
 
   // Cargar contenido del capítulo actual
   useEffect(() => {
@@ -71,7 +111,16 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
 
         const text = await response.text()
         setChapterContent(text)
-        setCurrentParagraph(0)
+
+        // Nivel PRO: Reanudación de lectura (recuperar progreso)
+        const specificKey = `audio_progress_book_${book.id}_ch_${currentChapterIndex}`
+        const savedIndex = parseInt(localStorage.getItem(specificKey))
+        if (!isNaN(savedIndex) && savedIndex > 0) {
+          setCurrentParagraph(savedIndex)
+        } else {
+          setCurrentParagraph(0)
+        }
+
       } catch (error) {
         console.error("Error loading chapter:", error)
         setChapterContent("Error al cargar el contenido. Por favor, intente de nuevo más tarde.")
@@ -128,14 +177,27 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     return () => {
       window.speechSynthesis.cancel()
       isPlayingRef.current = false
+      releaseWakeLock()
     }
   }, [])
+
+  // Automático (PRO): Desplazarse al párrafo guardado al terminar de cargar
+  useEffect(() => {
+    if (!isLoading && currentParagraph > 0) {
+      const waitTimer = setTimeout(() => {
+        const element = document.getElementById(`paragraph-${currentParagraph}`)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 500)
+      return () => clearTimeout(waitTimer)
+    }
+  }, [isLoading, currentParagraph])
 
   // Chrome TTS keep-alive: Chrome silently stops speaking after ~15 s without interaction
   // IMPORTANTE: En móviles (iOS/Android), el pause/resume rompe la lectura y la corta a los pocos segundos.
   useEffect(() => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    if (isMobile) return // Desactivar este fix de Chrome en dispositivos móviles
+    if (isMobileDevice) return // Desactivar este fix de Chrome en dispositivos móviles
 
     const id = setInterval(() => {
       if (window.speechSynthesis && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
@@ -144,7 +206,7 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
       }
     }, 10000)
     return () => clearInterval(id)
-  }, [])
+  }, [isMobileDevice])
 
   if (!book || !book.capitulos) return null
 
@@ -209,6 +271,7 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     if (!isPlayingRef.current || index >= paragraphs.length) {
       setIsPlaying(false)
       isPlayingRef.current = false
+      releaseWakeLock() // Liberar el Wake Lock al terminar
       return
     }
 
@@ -268,14 +331,16 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     }
   }
 
-  const handleListenToggle = () => {
+  const handleListenToggle = async () => {
     if (isPlayingRef.current) {
       window.speechSynthesis.cancel()
       isPlayingRef.current = false
       setIsPlaying(false)
+      await releaseWakeLock()
     } else {
       isPlayingRef.current = true
       setIsPlaying(true)
+      await requestWakeLock()
       playNext(currentParagraph)
     }
   }
@@ -362,6 +427,18 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
           <div className="mt-4 h-1 bg-white/20 rounded-full overflow-hidden">
             <div className="h-full bg-[#D4AF37] transition-all" style={{ width: `${progress}%` }} />
           </div>
+
+          {/* Fallback UX (Aviso si no soporta Wake Lock) */}
+          {isPlaying && !wakeLockSupported && isMobileDevice && (
+            <div className="mt-4 bg-[#F5EDD9]/80 border-l-4 border-yellow-800 p-3 rounded text-sm text-yellow-900 font-serif flex items-start gap-2">
+              <span className="text-xl">⚠️</span>
+              <p>
+                <b>Atención:</b> Tu navegador no soporta el bloqueo de pantalla. Por favor, 
+                trata de mantener la pantalla encendida o no salgas del navegador 
+                para evitar que la voz se interrumpa.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Contenido Principal */}
