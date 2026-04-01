@@ -95,7 +95,11 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
           'Microsoft Laura - Spanish (Spain)',
           'Microsoft Pablo - Spanish (Spain)'
         ]
-        return all.filter(v => allowedVoices.includes(v.name))
+        // Buscar voces de PC permitidas
+        const specific = all.filter(v => allowedVoices.includes(v.name))
+        if (specific.length > 0) return specific
+        // Para móviles o si no están las de PC, devolver cualquier voz en español
+        return all.filter(v => v.lang.startsWith('es'))
       }
 
       const loadVoices = () => {
@@ -122,7 +126,11 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
   }, [])
 
   // Chrome TTS keep-alive: Chrome silently stops speaking after ~15 s without interaction
+  // IMPORTANTE: En móviles (iOS/Android), el pause/resume rompe la lectura y la corta a los pocos segundos.
   useEffect(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    if (isMobile) return // Desactivar este fix de Chrome en dispositivos móviles
+
     const id = setInterval(() => {
       if (window.speechSynthesis && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
         window.speechSynthesis.pause()
@@ -218,13 +226,15 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     utterance.rate = 1.0
     if (selectedVoice) utterance.voice = selectedVoice
 
-    // Fallback timeout: si onend no se dispara en 15s, continuar al siguiente
+    // Fallback timeout tolerante para que no acorte la lectura si hay retraso de red o el texto es largo.
+    // Mínimo 15 segundos o aprox 120ms por letra (un bloque de 200 letras = 24s extra).
+    const estimatedTime = Math.max(15000, text.length * 120)
     let endTimeout = setTimeout(() => {
-      console.log('[TTS] Timeout fallback - paragraph', index)
+      console.log('[TTS] Timeout fallback (seguridad final) - paragraph', index)
       if (isPlayingRef.current && index + 1 < paragraphs.length) {
         playNext(index + 1)
       }
-    }, 15000)
+    }, estimatedTime)
 
     utterance.onend = () => {
       clearTimeout(endTimeout)
