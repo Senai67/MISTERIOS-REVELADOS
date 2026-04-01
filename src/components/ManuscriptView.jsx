@@ -367,12 +367,12 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
 
         {/* Cabecera de controles */}
         <div className="mb-6 p-4 rounded-lg shadow-lg" style={{ backgroundColor: book.color }}>
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <button onClick={onBack} className="flex items-center gap-2 text-white font-serif uppercase text-sm">
               <IconArrowLeft /> Volver
             </button>
 
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
               {/* Selector de Capítulo */}
               <select
                 value={currentChapterIndex}
@@ -382,7 +382,7 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
                   isPlayingRef.current = false
                   setIsPlaying(false)
                 }}
-                className="px-2 py-1 rounded text-sm bg-white border border-yellow-600 font-serif"
+                className="px-2 py-2 sm:py-1 rounded text-sm bg-white border border-yellow-600 font-serif w-full sm:w-auto max-w-full truncate"
               >
                 {book.capitulos.map((cap, i) => (
                   <option key={i} value={i}>{cap.numero}. {cap.titulo}</option>
@@ -393,7 +393,7 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
               <select
                 value={selectedVoice?.name || ''}
                 onChange={handleVoiceChange}
-                className="px-2 py-1 rounded text-sm bg-white border border-yellow-600 font-serif max-w-[200px] truncate"
+                className="px-2 py-2 sm:py-1 rounded text-sm bg-white border border-yellow-600 font-serif w-full sm:w-[220px] max-w-full truncate"
               >
                 {voices.map(v => {
                   let displayName = v.name;
@@ -415,7 +415,7 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
 
               <button
                 onClick={handleListenToggle}
-                className="flex items-center gap-2 px-3 py-1 rounded text-sm text-white font-serif transition-colors hover:opacity-90"
+                className="flex items-center justify-center sm:justify-start gap-2 px-3 py-2 sm:py-1 rounded text-sm text-white font-serif transition-colors hover:opacity-90 w-full sm:w-auto"
                 style={{ backgroundColor: book.id === 0 ? '#8B0000' : '#D4AF37' }}
               >
                 {isPlaying ? <IconPause /> : <IconPlay />} {isPlaying ? 'Pausar' : 'Escuchar'}
