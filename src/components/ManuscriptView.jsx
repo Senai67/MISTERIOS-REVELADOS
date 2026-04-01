@@ -88,18 +88,24 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       const synth = window.speechSynthesis
       const sortAndFilterVoices = (all) => {
-        const allowedVoices = [
+        const preferred = [
           'Google español',
           'Google español de Estados Unidos',
           'Microsoft Helena - Spanish (Spain)',
           'Microsoft Laura - Spanish (Spain)',
           'Microsoft Pablo - Spanish (Spain)'
         ]
-        // Buscar voces de PC permitidas
-        const specific = all.filter(v => allowedVoices.includes(v.name))
-        if (specific.length > 0) return specific
-        // Para móviles o si no están las de PC, devolver cualquier voz en español
-        return all.filter(v => v.lang.startsWith('es'))
+        // Obtener todas las voces en español
+        const spanishVoices = all.filter(v => 
+          v.lang.startsWith('es') || v.lang.includes('-es-') || v.name.toLowerCase().includes('español') || v.name.toLowerCase().includes('spanish')
+        )
+        // Ordenarlas: las específicas primero, luego las demás alfabéticamente
+        return spanishVoices.sort((a, b) => {
+          const aFav = preferred.includes(a.name) ? -1 : 1
+          const bFav = preferred.includes(b.name) ? -1 : 1
+          if(aFav !== bFav) return aFav - bFav
+          return a.name.localeCompare(b.name)
+        })
       }
 
       const loadVoices = () => {
@@ -322,9 +328,24 @@ export default function ManuscriptView({ book, onBack, initialChapter = 0 }) {
               <select
                 value={selectedVoice?.name || ''}
                 onChange={handleVoiceChange}
-                className="px-2 py-1 rounded text-sm bg-white border border-yellow-600 font-serif"
+                className="px-2 py-1 rounded text-sm bg-white border border-yellow-600 font-serif max-w-[200px] truncate"
               >
-                {voices.map(v => <option key={v.name} value={v.name}>{v.name}</option>)}
+                {voices.map(v => {
+                  let displayName = v.name;
+                  const nameLower = displayName.toLowerCase();
+                  if (nameLower.includes('pablo') || nameLower.includes('jorge') || nameLower.includes('diego') || nameLower.includes('carlos')) {
+                    displayName = `Masculina • ${displayName}`;
+                  } else if (nameLower.includes('helena') || nameLower.includes('laura') || nameLower.includes('mónica') || nameLower.includes('monica') || nameLower.includes('paulina') || nameLower.includes('luciana') || nameLower.includes('google')) {
+                    displayName = `Femenina • ${displayName}`;
+                  } else if (nameLower.includes('español (españa)') || nameLower.includes('spanish (spain)')) {
+                    displayName = `Femenina genérica • (España)`;
+                  } else if (nameLower.includes('español (estados unidos)') || nameLower.includes('spanish (united states)')) {
+                    displayName = `Femenina genérica • (EE.UU)`;
+                  } else if (nameLower.includes('américa latina') || nameLower.includes('latina')) {
+                    displayName = `Femenina genérica • (Latam)`;
+                  }
+                  return <option key={v.name} value={v.name}>{displayName}</option>
+                })}
               </select>
 
               <button
