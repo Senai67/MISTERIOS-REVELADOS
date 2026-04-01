@@ -42,7 +42,7 @@ export default function HeroSectionB() {
           className={`text-lg sm:text-xl md:text-2xl italic max-w-3xl transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           style={{
-            color: '#D4AF37',
+            color: '#edcc61',
             fontFamily: 'Playfair Display, serif',
             textShadow: '1px 1px 4px rgba(0,0,0,0.8)'
           }}

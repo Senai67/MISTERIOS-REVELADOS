@@ -136,12 +136,12 @@ const MasterChat = ({ isOpen, onClose, onNavigateToBook }) => {
                     {messages.map((msg, idx) => (
                         <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up w-full`}>
                             {msg.role === 'user' ? (
-                                <div className="max-w-[85%] px-5 py-3 rounded-2xl bg-ink text-parchment rounded-tr-none">
+                                <div className="max-w-[85%] px-5 py-3 rounded-2xl text-parchment rounded-tr-none" style={{ backgroundColor: '#7a473d' }}>
                                     <p className="font-serif text-sm md:text-base">{msg.text}</p>
                                 </div>
                             ) : (
                                 <div className="w-full max-w-full md:max-w-[90%]">
-                                    <div className="px-5 py-3 rounded-2xl bg-gold/5 text-ink-light rounded-tl-none border border-gold/10 inline-block">
+                                    <div className="px-5 py-3 rounded-2xl bg-gold/5 rounded-tl-none border border-gold/10 inline-block" style={{ color: '#7a473d' }}>
                                         <p className="master-response text-sm md:text-base">{msg.text}</p>
                                     </div>
 

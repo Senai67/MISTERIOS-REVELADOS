@@ -59,7 +59,8 @@ export default function BookCardB({ book, onClick }) {
             style={{
               maxWidth: '130%',
               maxHeight: '130%',
-              filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))'
+              filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))',
+              transform: book.id === 2 ? 'translateY(-10px)' : 'none'
             }}
           />
         </div>
