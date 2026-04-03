@@ -1,29 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import HeroSection from './components/HeroSection'
 import BookGrid from './components/BookGrid'
 import BookDetailView from './components/BookDetailView'
 import ManuscriptView from './components/ManuscriptView'
 import MasterChat from './components/MasterChat/MasterChat'
-import HeroSectionB from './opcion-bapp/HeroSectionB'
-import BookGridB from './opcion-bapp/BookGridB'
-import BookDetailViewB from './opcion-bapp/BookDetailViewB'
 
 function App() {
   const [selectedBook, setSelectedBook] = useState(null)
   const [isReadingMode, setIsReadingMode] = useState(false)
   const [initialChapter, setInitialChapter] = useState(0)
   const [isChatOpen, setIsChatOpen] = useState(false)
-  const [isOptionB, setIsOptionB] = useState(false) // Forzar Opción A por defecto
   const [loadError, setLoadError] = useState(null)
-
-  useEffect(() => {
-    console.log('[App] isOptionB:', isOptionB)
-  }, [isOptionB])
-
-  const toggleOptionB = () => {
-    console.log('[App] Toggling OptionB')
-    setIsOptionB(prev => !prev)
-  }
 
   const handleBookSelect = (book, chapterIndex = null) => {
     setSelectedBook(book)
@@ -57,27 +44,8 @@ function App() {
   }
 
   try {
-    const DetailView = isOptionB ? BookDetailViewB : BookDetailView
-    const Hero = isOptionB ? HeroSectionB : HeroSection
-    const Grid = isOptionB ? BookGridB : BookGrid
-
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#FDF6E3' }}>
-        <button
-          onClick={toggleOptionB}
-          className="fixed top-4 right-4 z-50 px-4 py-2 rounded-md text-xs uppercase tracking-wider transition-all duration-200"
-          style={{
-            backgroundColor: isOptionB ? '#D4AF37' : '#F5EDD9',
-            color: isOptionB ? '#FFFFFF' : '#4A4A4A',
-            border: '2px solid #D4AF37',
-            fontFamily: 'Cinzel, serif',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-          }}
-          title={isOptionB ? 'Cambiar a Opción A' : 'Cambiar a Opción B'}
-        >
-          {isOptionB ? 'Opción B' : 'Opción A'}
-        </button>
-
         {isReadingMode && selectedBook ? (
           <ManuscriptView
             book={selectedBook}
@@ -85,15 +53,15 @@ function App() {
             initialChapter={initialChapter}
           />
         ) : selectedBook ? (
-          <DetailView
+          <BookDetailView
             book={selectedBook}
             onBack={handleBack}
             onRead={handleRead}
           />
         ) : (
           <>
-            <Hero />
-            <Grid onBookSelect={handleBookSelect} />
+            <HeroSection />
+            <BookGrid onBookSelect={handleBookSelect} />
 
             <footer
               style={{

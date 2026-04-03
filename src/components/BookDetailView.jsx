@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react'
 
-/**
- * BookDetailView - Vista de detalle de libro
- * 
- * Muestra la portada del libro (misma card que home) con información detallada,
- * sinopsis, botones de acción y lista de capítulos.
- * Diseño horizontal: cover izquierda, info derecha.
- */
+const IMAGENES_OPCION_B = {
+  0: '/OpcionB/portada-IAM.png',
+  1: '/OpcionB/misterios-revelados.png',
+  2: '/OpcionB/la-presencia-magica.png',
+  3: '/OpcionB/discursos-IAM.png'
+}
 
-// Iconos
 const IconArrowLeft = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -42,12 +40,12 @@ const IconCheck = () => (
 )
 
 export default function BookDetailView({ book, onBack, onRead }) {
+  const imagenOpcionB = IMAGENES_OPCION_B[book.id] || book.imagen
   const [progressPercent, setProgressPercent] = useState(0)
   const [hasProgress, setHasProgress] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
 
   useEffect(() => {
-    // Calcular progreso de lectura desde localStorage
     const savedProgress = localStorage.getItem(`book_progress_${book.id}`)
     if (savedProgress) {
       const progress = parseInt(savedProgress)
@@ -60,7 +58,6 @@ export default function BookDetailView({ book, onBack, onRead }) {
     if (showResetConfirm) {
       localStorage.setItem(`book_progress_${book.id}`, '0')
 
-      // Clear individual chapter progress
       book.capitulos.forEach((_, idx) => {
         localStorage.removeItem(`audio_progress_book_${book.id}_ch_${idx}`)
         localStorage.removeItem(`audio_progress_book_${book.id}_ch_${idx}_percent`)
@@ -76,15 +73,13 @@ export default function BookDetailView({ book, onBack, onRead }) {
   }
 
   const handleDownloadPDF = () => {
-    // Descargar el PDF completo de la Trilogía
-    window.open('/pdfs/Misterios_Revelados_Completo.pdf', '_blank');
+    window.open('/pdfs/Misterios_Revelados_Completo.pdf', '_blank')
   }
 
   return (
     <section className="min-h-screen py-8 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#FDF6E3' }}>
       <div className="max-w-6xl mx-auto">
 
-        {/* Botón Volver */}
         <button
           onClick={onBack}
           className="inline-flex items-center gap-2 mb-8 text-sm uppercase tracking-wider transition-colors duration-200"
@@ -96,114 +91,47 @@ export default function BookDetailView({ book, onBack, onRead }) {
           Volver a la Biblioteca
         </button>
 
-        {/* Contenido Principal - Layout Horizontal */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
-          {/* Columna Izquierda - Portada del Libro (misma card que home) */}
-          <div className="lg:col-span-4 xl:col-span-3">
-            <div
-              className="rounded-lg overflow-hidden shadow-2xl transition-transform duration-300"
-              style={{
-                backgroundColor: book.color,
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-              }}
-            >
-              {/* Imagen de portada */}
-              <div className="relative h-80 sm:h-96 overflow-hidden">
-                {book.imagen ? (
-                  <img
-                    src={book.imagen}
-                    alt={`Portada de ${book.titulo}`}
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center 20%' }}
-                  />
-                ) : (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    style={{
-                      background: `linear-gradient(135deg, ${book.color} 0%, ${book.color}dd 100%)`
-                    }}
-                  >
-                    <div
-                      className="w-24 h-24 rounded-full border-2 flex items-center justify-center"
-                      style={{ borderColor: 'rgba(212, 175, 55, 0.7)' }}
-                    >
-                      <span
-                        className="text-4xl font-bold"
-                        style={{ color: 'rgba(212, 175, 55, 0.9)', fontFamily: 'Cinzel, serif' }}
-                      >
-                        {book.volumen.replace('Volumen ', 'V').replace(' ', '')}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Overlay inferior */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-24"
+          <div className="lg:col-span-5 xl:col-span-4">
+            <div className="relative h-[48rem] sm:h-[56rem] overflow-hidden flex flex-col items-center justify-start pt-0 w-full">
+              <div className="w-full flex justify-center">
+                <img
+                  src={imagenOpcionB}
+                  alt={`Portada de ${book.titulo}`}
                   style={{
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)'
+                    filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))',
+                    maxWidth: '120%',
+                    maxHeight: '120%',
+                    width: 'auto',
+                    height: 'auto'
                   }}
                 />
               </div>
-
-              {/* Información en la portada */}
-              <div
-                className="p-6 text-center"
-                style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
-              >
-                <p
-                  className="text-xs uppercase tracking-widest mb-2"
-                  style={{ color: 'rgba(232, 200, 80, 0.9)', fontFamily: 'Cinzel, serif' }}
-                >
-                  {book.volumen}
-                </p>
-                <h2
-                  className="text-lg font-semibold mb-3"
-                  style={{ color: '#FFFFFF', fontFamily: 'Cinzel, serif' }}
-                >
-                  {book.titulo}
-                </h2>
-                <p
-                  className="text-sm italic opacity-80"
-                  style={{ color: '#FDF6E3', fontFamily: 'Playfair Display, serif' }}
-                >
-                  {book.descripcion}
-                </p>
-              </div>
             </div>
 
-            {/* Progreso de lectura (móvil/tablet) */}
             {hasProgress && (
               <div className="mt-6 p-4 rounded-lg lg:hidden" style={{ backgroundColor: '#F5EDD9' }}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm" style={{ color: '#4A4A4A', fontFamily: 'Cinzel, serif' }}>
                     Progreso de lectura
                   </span>
-                  <span
-                    className="text-lg font-bold"
-                    style={{ color: '#D4AF37', fontFamily: 'Cinzel, serif' }}
-                  >
+                  <span className="text-lg font-bold" style={{ color: '#D4AF37', fontFamily: 'Cinzel, serif' }}>
                     {progressPercent}%
                   </span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
                     className="h-full transition-all duration-500"
-                    style={{
-                      width: `${progressPercent}%`,
-                      backgroundColor: '#D4AF37'
-                    }}
+                    style={{ width: `${progressPercent}%`, backgroundColor: '#D4AF37' }}
                   />
                 </div>
               </div>
             )}
           </div>
 
-          {/* Columna Derecha - Información y Acciones */}
-          <div className="lg:col-span-8 xl:col-span-9">
+          <div className="lg:col-span-7 xl:col-span-8">
 
-            {/* Título y Sinopsis */}
             <div className="mb-8">
               <h1
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6"
@@ -226,9 +154,7 @@ export default function BookDetailView({ book, onBack, onRead }) {
               </div>
             </div>
 
-            {/* Botones de Acción */}
             <div className="flex flex-wrap items-center gap-4 mb-8">
-              {/* Botón Leer Manuscrito */}
               <button
                 onClick={() => onRead(0)}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm uppercase tracking-wider font-semibold transition-all duration-200"
@@ -251,7 +177,6 @@ export default function BookDetailView({ book, onBack, onRead }) {
                 Leer Manuscrito
               </button>
 
-              {/* Botón Reset Progreso */}
               <button
                 onClick={handleResetProgress}
                 className="inline-flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-200"
@@ -273,7 +198,6 @@ export default function BookDetailView({ book, onBack, onRead }) {
                 {showResetConfirm ? <IconCheck /> : <IconRefresh />}
               </button>
 
-              {/* Botón Descargar Manuscrito */}
               <button
                 onClick={handleDownloadPDF}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm uppercase tracking-wider font-semibold transition-all duration-200 border-2"
@@ -297,33 +221,25 @@ export default function BookDetailView({ book, onBack, onRead }) {
               </button>
             </div>
 
-            {/* Progreso de lectura (desktop) */}
             {hasProgress && (
               <div className="hidden lg:block mb-8 p-4 rounded-lg" style={{ backgroundColor: '#F5EDD9' }}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm" style={{ color: '#4A4A4A', fontFamily: 'Cinzel, serif' }}>
                     Progreso de lectura
                   </span>
-                  <span
-                    className="text-lg font-bold"
-                    style={{ color: '#D4AF37', fontFamily: 'Cinzel, serif' }}
-                  >
+                  <span className="text-lg font-bold" style={{ color: '#D4AF37', fontFamily: 'Cinzel, serif' }}>
                     {progressPercent}%
                   </span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
                     className="h-full transition-all duration-500"
-                    style={{
-                      width: `${progressPercent}%`,
-                      backgroundColor: '#D4AF37'
-                    }}
+                    style={{ width: `${progressPercent}%`, backgroundColor: '#D4AF37' }}
                   />
                 </div>
               </div>
             )}
 
-            {/* Contenido del Manuscrito */}
             <div className="mt-12">
               <h2
                 className="text-2xl font-bold mb-6 pb-3 border-b-2"
